@@ -22,7 +22,7 @@ Save your changes and reload the page. You should now get an alert while the cha
 
 ### Explore your options
 
-A function like that may be fine in some cases, but it's not very helpful if you want to dynamically execute code depending on attributes of your chart. That is why APEX passes argument(s) to this function. To see how many arguments there are, you can use [spread syntax][spread_syntax] in the function header and log the number of items received:
+A function like that may be fine in some cases, but it's not very helpful if you want to dynamically execute code depending on attributes of your chart. That is why APEX passes argument(s) to this function. To see how many arguments there are, you can use [spread syntax][spread_syntax] and log the number of items received:
 
 ```js
 (...args) => {
@@ -30,7 +30,7 @@ A function like that may be fine in some cases, but it's not very helpful if you
 }
 ```
 
-After saving & reloading once again, you can see that in your [developer console][dev_console], it says the number of items in `args` is .
+After saving & reloading once again, you can see that in your [developer console][dev_console], it says the number of items in `args` is 1.
 So let's update the function header and examine that argument:
 
 ```js
@@ -51,7 +51,6 @@ It may not be shown in your console output, but every axis can have the property
 1. `type: 'line'`
    - default type
    - needs a `value`
-   - can't really be added to x-axes
 
     ```js
     (options) => {
@@ -84,24 +83,24 @@ It may not be shown in your console output, but every axis can have the property
     }
     ```
 
->It is important to note that the **`options` must be returned**. Otherwise, your changes to the `options`-object will not be applied.
+>It is important to note that the **`options` must be returned**. Otherwise, your changes to this object will not be applied.
 
 Both types of reference objects have additional properties, of which the most important probably are:
 
-| Property        | Type                  | Description                                                             |
-| --------------- | --------------------- | ----------------------------------------------------------------------- |
-| displayInLegend | `'on'` \| `'off'`     | Whether to display the object in the legend.                            |
-| text            | string                | The object's name in the legend                                         |
-| shortDesc       | string                | Text displayed when hovering over the object (line/area and legend).    |
-| color           | string                | The color of the object. Can be any valid [`<color>`-value][css_color]. |
-| lineWidth       | number                | The width of the line.                                                  |
-| location        | `'front'` \| `'back'` |                                                                         |
+| Property        | Type                  | Description                                                                 |
+| --------------- | --------------------- | --------------------------------------------------------------------------- |
+| location        | `'front'` \| `'back'` | Whether to display the object behind or in front of the data items.         |
+| displayInLegend | `'on'` \| `'off'`     | Whether to display the object in the legend.                                |
+| text            | string                | The object's name in the legend                                             |
+| shortDesc       | string                | Text displayed when hovering over the object (line/area and legend).        |
+| color           | string                | The color of the object. Can be any valid [`CSS <color>`-value][css_color]. |
+| lineWidth       | number                | The width of the line.                                                      |
 
 >For a complete list of properties, visit the [documentation for referenceObject][refObj_doc].
 
 ## Adding Dynamic Reference Objects
 
-When you want to add a reference object that depends on the chart's data, you can set a function for `dataFilter` on your `options`. This function will be executed after data has been fetched. It can have an argument, `data`, which mainly contains information about every series and their datapoints.
+When you want to add a reference object that depends on the chart's data, you can set a function for `dataFilter` on your `options`. This function will be executed after data has been fetched. It can have an argument, `data`, which mainly contains information about the chart's series and their datapoints.
 
 ```js
 (options) => {
@@ -114,6 +113,60 @@ When you want to add a reference object that depends on the chart's data, you ca
   return options;
 }
 ```
+
+From the `data` object you can now add a reference object to `options` inside of the `dataFilter` function, for example a line marking the minimum and maximum values:
+
+```js
+(options) => {
+  options.yAxis.referenceObjects = [];
+
+  options.dataFilter = (data) => {
+    // iterate over every series
+    data.series.forEach(series => {
+      let min = Infinity;
+      let max = -Infinity;
+
+      // iterate over every item (= datapoint)
+      // to find this series' minimum & maximum
+      series.items.forEach(item => {
+        if (item.value < min) {
+          min = item.value;
+        }
+
+        if (item.value > max) {
+          max = item.value;
+        }
+      });
+
+      // add ref line to y-axis
+      options.yAxis.referenceObjects.push(
+        {
+          value: min,
+          text: 'min for ' + series.name,
+          displayInLegend: 'on',
+          color: '#' + Math.random().toString(16).substr(2, 6), // generate a random color
+        },
+        {
+          value: max,
+          text: 'max for ' + series.name,
+          displayInLegend: 'on',
+          color: '#' + Math.random().toString(16).substr(2, 6),
+        }
+      );
+    });
+
+    return data;
+  }
+
+  return options;
+}
+```
+
+## Final Thoughts
+
+In this article, we explored the initialization of JET Charts in Oracle APEX and learned how to add constant lines and areas to those charts.
+
+Finally, I would like to advise you to outsource any duplicate code, e. g. adding reference lines to multiple charts on your page. You can do this by declaring a function in `Function and Global Variable Declaration` of your page (`const refLineFunc = (options) => { ... }`) and then adding that function to the `JavaScript Initialization Code` of your charts (`refLineFunc`).
 
 <!-- LINKS -->
 [spread_syntax]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
