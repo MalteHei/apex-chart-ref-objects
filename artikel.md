@@ -6,7 +6,7 @@ When developing Applications in Oracle APEX, you may want to display some data i
 
 After creating a region of type `Chart`, go to its `Attributes` and scroll down to `Advanced`. Here, you can define a JavaScript-Function which will be called when the chart is initialized.
 
-> If you don't care about manually exploring a JET Chart and potentially learing some JavaScript, you can skip this chapter and continue at [Adding a Static Reference Object to an Axis](#adding-a-static-reference-object-to-an-axis).
+> If you don't care about manually exploring a JET Chart and potentially learning some JavaScript, you can skip this chapter and continue at [Adding a Static Reference Object to an Axis](#adding-a-static-reference-object-to-an-axis).
 
 ### Testing
 
@@ -31,7 +31,7 @@ A function like that may be fine in some cases, but it's not very helpful if you
 ```
 
 After saving & reloading once again, you can see that in your [developer console][dev_console], it says the number of items in `args` is 1.
-So let's update the function header and examine that argument:
+So, let's update the function header and examine that argument:
 
 ```js
 (arg) => {
