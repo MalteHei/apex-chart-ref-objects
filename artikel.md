@@ -1,5 +1,7 @@
 # Oracle APEX: Reference Objects in JET Charts
 
+![Photo by Lukas Blazek on unsplash.com](https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1920&q=100)
+
 When developing Applications in Oracle APEX, you may want to display some data in JET Charts. In this article, I will show you how to add additional lines and areas to your JET Charts to mark special values like an average, minimum or maximum.
 
 ## Exploration
@@ -94,7 +96,7 @@ Both types of reference objects have additional properties, of which the most im
 | text            | string                | The object's name in the legend                                             |
 | shortDesc       | string                | Text displayed when hovering over the object (line/area and legend).        |
 | color           | string                | The color of the object. Can be any valid [`CSS <color>`-value][css_color]. |
-| lineWidth       | number                | The width of the line.                                                      |
+| lineWidth       | number                | The width of a reference line in pixels.                                    |
 
 >For a complete list of properties, visit the [documentation for referenceObject][refObj_doc].
 
@@ -161,6 +163,10 @@ From the `data` object you can now add a reference object to `options` inside of
   return options;
 }
 ```
+
+... resulting in the following:
+
+![JET Chart with reference lines for minimum and maximum values](img/chart_reflines_min-max.png)
 
 ## Final Thoughts
 
