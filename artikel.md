@@ -100,6 +100,10 @@ Both types of reference objects have additional properties, of which the most im
 
 >For a complete list of properties, visit the [documentation for referenceObject][refObj_doc].
 
+Results may look like the following:
+
+![JET Chart with a static reference line and three areas](img/chart_refobj_static_line-areas.png)
+
 ## Adding Dynamic Reference Objects
 
 When you want to add a reference object that depends on the chart's data, you can set a function for `dataFilter` on your `options`. This function will be executed after data has been fetched. It can have an argument, `data`, which mainly contains information about the chart's series and their datapoints.
@@ -166,7 +170,7 @@ From the `data` object you can now add a reference object to `options` inside of
 
 ... resulting in the following:
 
-![JET Chart with reference lines for minimum and maximum values](img/chart_reflines_min-max.png)
+![JET Chart with reference lines for minimum and maximum values](img/chart_refobj_dynamic_min-max.png)
 
 ## Final Thoughts
 
